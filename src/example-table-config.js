@@ -6,14 +6,14 @@ const columns = [
 ];
 
 function highlightFootscray(value) {
-  if (value == 'footscray') {
-     return 'bg-red-500';
+  if (value == 'sydney') {
+     return 'bg-indigo-300';
   }
 }
 
 function rowClass(row, index) {
-  if (row.suburb == 'delahey') {
-    return 'bg-blue-300';
+  if (row.suburb == 'sydney') {
+    return 'bg-teal-300';
   }
 
   /* else if (index % 2 == 0) { // zebra
@@ -22,6 +22,7 @@ function rowClass(row, index) {
 }
 
 
+// XXX: Build this in ?
 function addDefaults(columns) {
   const defaults = { header: null, headerClass: null };
   return columns.map(column => {
@@ -36,5 +37,3 @@ export default {
   columns: addDefaults(columns),
   style: tailwind,
 };
-
-
