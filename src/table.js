@@ -45,8 +45,14 @@ export default {
           let skip = false;
           props.filters.forEach((filter, index) => {
 
-            // XXX: Handle multiple columns here, in case of virtual columns.
-            const cell = row[filter.column].toString();
+            let cell;
+
+            if (filter.column.includes(':')) {
+              const keys = filter.column.split(':');
+              cell = keys.reduce((accum, key) => row[key] + accum, "");
+            } else {
+              cell = row[filter.column].toString();
+            }
 
             if (!cell.includes(filter.value)) {
               skip = true;
