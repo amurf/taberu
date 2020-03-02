@@ -1,5 +1,5 @@
 const columns = [
-  { key: 'name', virtual: ['first_name', 'last_name']  },
+  { key: 'first_name:last_name:email', header: 'name' },
   { key: 'suburb' },
   { key: 'postcode', type: 'number' },
   // { key: 'edit', header: '', filter: false },

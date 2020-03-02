@@ -48,11 +48,9 @@
           </template>
           </sd-tbody>
 
-          </sd-table>
-        -->
-
-        <template #name="{ row, index }">
-          <h1>{{ row.first_name }} {{ row.last_name }}</h1>
+        <template #first_name:last_name:email="{ row, index }">
+          <div class='capitalize font-medium'>{{ row.first_name }} {{ row.last_name }}</div>
+          <div clas='text-gray-500'>{{ row.email }}</div>
         </template>
 
         <template #suburb="{ row }">
