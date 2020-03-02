@@ -34,8 +34,9 @@ export default {
         let tr = [];
 
         if (props.search) {
-          const stringifiedRow = JSON.stringify(Object.values(row));
-          if (!stringifiedRow.includes(props.search)) {
+          //XXX: Add toggle for case sensitive searching.
+          const stringifiedRow = Object.values(row).join(' ');
+          if (!stringifiedRow.toLowerCase().includes(props.search.toLowerCase())) {
             return;
           }
         }
