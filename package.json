@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve --port 6556",
     "build": "vue-cli-service build",
-    "deploy-gh-pages": "git checkout -B gh-pages && npm run build && git add dist -f && git commit dist -m 'gh-pages' --no-verify && git subtree push --prefix dist origin gh-pages && git checkout master && git branch -D gh-pages"
+    "deploy": "npm run build && gh-pages --dotfiles --dist dist --message 'gh-pages'"
   },
   "dependencies": {
     "core-js": "^3.4.4",
@@ -15,6 +15,7 @@
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
     "@vue/compiler-sfc": "^3.0.0-alpha.3",
+    "gh-pages": "^2.2.0",
     "vue-cli-plugin-vue-next": "^0.0.4",
     "vue-template-compiler": "^2.6.10"
   },
