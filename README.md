@@ -1,5 +1,7 @@
 # vue-3-example
 
+[Example here](https://amurf.github.io/taberu/)
+
 ## Project setup
 ```
 yarn install
