@@ -1,4 +1,4 @@
-# vue-3-example
+# taberu
 
 [Example here](https://amurf.github.io/taberu/)
 
