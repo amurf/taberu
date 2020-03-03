@@ -35,10 +35,26 @@ export default {
 
         if (props.search) {
           //XXX: Add toggle for case sensitive searching.
+
+          // This splits on whitespace, searching for each word
+          // and if one is not found, skips the row.
+
+          const toFind         = props.search.split(' ');
           const stringifiedRow = Object.values(row).join(' ');
-          if (!stringifiedRow.toLowerCase().includes(props.search.toLowerCase())) {
+
+          // XXX: Gonna do this better, quick answer to the problem for now.
+          let skip = false;
+          toFind.forEach((value) => {
+            if (!stringifiedRow.toLowerCase().includes(value.toLowerCase())) {
+              skip = true;
+              return;
+            }
+          });
+
+          if (skip) {
             return;
           }
+
         }
 
         if (props.filters) {
