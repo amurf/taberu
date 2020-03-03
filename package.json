@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --port 6556",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "deploy-gh-pages": "git checkout -B gh-pages && npm run build && git add dist -f && git commit dist -m 'gh-pages' --no-verify && git subtree push --prefix dist origin gh-pages && git checkout master && git branch -D gh-pages"
   },
   "dependencies": {
     "core-js": "^3.4.4",
