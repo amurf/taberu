@@ -27,7 +27,7 @@
       <div class="flex mb-2" v-else>
         <div class="p-2 text-sm bg-teal-300 rounded shadow mr-2" v-for="filter in filters.current">
           {{ filter.header || filter.column }}: {{ filter.value }}
-          <button @click="deleteFilter(filter)">&times;</button>
+          <button class="text-teal-600" @click="deleteFilter(filter)">&times;</button>
         </div>
       </div>
       <!-- Filter end -->
