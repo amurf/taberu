@@ -96,7 +96,8 @@ export default {
 
     let search = ref(null);
     let data   = ref([
-      { first_name: 'person', last_name: 'one', suburb: 'melbourne', postcode: 3000, email: 'fake@gmail.com' },
+      { first_name: 'person', last_name: 'one', suburb: 'melbourne', test: 'b', postcode: 3000, email: 'fake@gmail.com' },
+      { first_name: 'person', last_name: 'one', suburb: 'melbourne', test: 'a', postcode: 3000, email: 'fake@gmail.com' },
       { first_name: 'person', last_name: 'two', suburb: 'sydney', postcode: 2000, email: 'real@gmail.com' },
       { first_name: 'person', last_name: 'three', suburb: 'brisbane', postcode: 4000, email: 'email@hotmail.com' },
     ]);
@@ -116,4 +117,23 @@ export default {
 </script>
 <style>
 .number { text-align: right }
+
+.sortable {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='101' height='101' preserveAspectRatio='none'%3E%3Cpath opacity='.3' d='M51 1l25 23 24 22H1l25-22zm0 100l25-23 24-22H1l25 22z'/%3E%3C/svg%3E");
+  background-position: right .375rem center;
+  padding-right: calc(.75rem + .65em);
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-size: .65em 1em;
+}
+
+.sort-desc {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='101' height='101' preserveAspectRatio='none'%3E%3Cpath opacity='.3' d='M51 1l25 23 24 22H1l25-22z'/%3E%3Cpath d='M51 101l25-23 24-22H1l25 22z'/%3E%3C/svg%3E");
+}
+
+.sort-asc {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='101' height='101' preserveAspectRatio='none'%3E%3Cpath d='M51 1l25 23 24 22H1l25-22z'/%3E%3Cpath opacity='.3' d='M51 101l25-23 24-22H1l25 22z'/%3E%3C/svg%3E");
+
+}
+
 </style>

@@ -1,6 +1,7 @@
 const columns = [
   { key: 'first_name:last_name:email', header: 'name' },
-  { key: 'suburb' },
+  { key: 'suburb', sortable: true },
+  { key: 'test', sortable: true },
   { key: 'postcode', type: 'number' },
   // { key: 'edit', header: '', filter: false },
 ];

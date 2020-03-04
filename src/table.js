@@ -1,119 +1,143 @@
 import { h, reactive, watch, computed } from 'vue';
 
+import thead from './thead';
+
 function isFunction(obj) {
-  return !!(obj && obj.constructor && obj.call && obj.apply);
+	return !!(obj && obj.constructor && obj.call && obj.apply);
 }
 function isNumber(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+	return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 export default {
-  name: 'app',
-  props: {
-    config: Object,
-    data: Array,
-    search: String,
-    filters: Array,
-  },
-  setup(props, { slots, attrs, emit }) {
-    return () => {
-      const opts = { defaultColumnTag: 'th' };
+	name: 'app',
+	props: {
+		config: Object,
+		data: Array,
+		search: String,
+		filters: Array,
+	},
+	setup(props, { slots, attrs, emit }) {
+		return () => {
+			const style   = props.config.style;
+			const columns = props.config.columns;
+			const content = [];
 
-      const style   = props.config.style;
-      const columns = props.config.columns;
-      const content = [];
+			const headers = thead.render(columns);
+			const body    = [];
 
-      const headers = columns.map(column =>
-        h(opts.defaultColumnTag,
-          { class: `${ style.th } ${ column.headerClass } ${ column.type ?? 'string' }` },
-          column.header ?? column.key));
+			const sortableColumns = columns.filter(column => column.sortable);
+			const sortComparators = sortableColumns.map(column => {
+				return (a, b) => {
+					if (a[column.key] > b[column.key]) {
+						return  column.sortDirection == 'asc' ? 1 : -1;
+					} else if (a[column.key] < b[column.key]) {
+						return  column.sortDirection == 'asc' ? -1 : 1;
+					}
 
-      const body    = [];
+					return 0;
+				};
+			});
 
-      props.data.forEach((row,index) => {
-        let tr = [];
+			function sorter(sorters, next) {
+				return (a, b) => {
+					const sortBy = sorters[index];
+					const result = sortBy(a,b);
 
-        if (props.search) {
-          //XXX: Add toggle for case sensitive searching.
+					if (result == 0 && index < sorters.length - 1) {
+						return sorter(sorters, index + 1)(a, b);
+					}
 
-          // This splits on whitespace, searching for each word
-          // and if one is not found, skips the row.
+					return result;
+				}
+			}
 
-          const toFind         = props.search.split(' ');
-          const stringifiedRow = Object.values(row).join(' ');
+			props.data.sort(sorter(sortComparators, 0));
 
-          // XXX: Gonna do this better, quick answer to the problem for now.
-          let skip = false;
-          toFind.forEach((value) => {
-            if (!stringifiedRow.toLowerCase().includes(value.toLowerCase())) {
-              skip = true;
-              return;
-            }
-          });
+			props.data.forEach((row,index) => {
+				let tr = [];
 
-          if (skip) {
-            return;
-          }
+				if (props.search) {
+					//XXX: Add toggle for case sensitive searching.
 
-        }
+					// This splits on whitespace, searching for each word
+					// and if one is not found, skips the row.
 
-        if (props.filters) {
-          // This skip is for when a filter is triggered, row will be skipped.
-          let skip = false;
-          props.filters.forEach((filter, index) => {
+					const toFind         = props.search.split(' ');
+					const stringifiedRow = Object.values(row).join(' ');
 
-            let cell;
+					// XXX: Gonna do this better, quick answer to the problem for now.
+					let skip = false;
+					toFind.forEach((value) => {
+						if (!stringifiedRow.toLowerCase().includes(value.toLowerCase())) {
+							skip = true;
+							return;
+						}
+					});
 
-            if (filter.column.includes(':')) {
-              const keys = filter.column.split(':');
-              cell = keys.reduce((accum, key) => row[key] + accum, "");
-            } else {
-              cell = row[filter.column].toString();
-            }
+					if (skip) {
+						return;
+					}
 
-            if (!cell.includes(filter.value)) {
-              skip = true;
-              return;
-            }
-          });
+				}
 
-          // See above definition
-          if (skip) {
-            return;
-          }
-        }
+				if (props.filters) {
+					// This skip is for when a filter is triggered, row will be skipped.
+					let skip = false;
+					props.filters.forEach((filter, index) => {
 
-        columns.forEach((column, colIndex) => {
-          let cell;
+						let cell;
 
-          if (slots[column.key]) {
-            cell = slots[column.key]({ row, index });
-          } else {
-            cell = row[column.key];
-          }
+						if (filter.column.includes(':')) {
+							const keys = filter.column.split(':');
+							cell = keys.reduce((accum, key) => row[key] + accum, "");
+						} else {
+							cell = row[filter.column].toString();
+						}
 
-          // XXX: Add some kind of custom css per cell function here?
-          let cellClass = props.config.cellClass;
-          if (isFunction(cellClass)) {
-            cellClass = cellClass(row[column.key]);
-          }
+						if (!cell.includes(filter.value)) {
+							skip = true;
+							return;
+						}
+					});
 
-          tr.push(h('td', { class: `${ style.td } ${ column.type ?? 'string' } ${ cellClass }` }, cell));
-        });
+					// See above definition
+					if (skip) {
+						return;
+					}
+				}
 
-        let rowClass = props.config.rowClass;
-        if (isFunction(rowClass)) {
-          rowClass = rowClass(row, index);
-        }
+				columns.forEach((column, colIndex) => {
+					let cell;
 
-        body.push(h('tr', { class: `${ style.tr } ${ rowClass }` }, tr));
-      });
+					if (slots[column.key]) {
+						cell = slots[column.key]({ row, index });
+					} else {
+						cell = row[column.key];
+					}
 
-      content.push(h('thead', headers));
-      content.push(h('tbody', body));
+					// XXX: Add some kind of custom css per cell function here?
+					let cellClass = props.config.cellClass;
+					if (isFunction(cellClass)) {
+						cellClass = cellClass(row[column.key]);
+					}
 
-      const table = h('table', { class: `${ style.table }` }, content);
-      return h('div', { class: `${ style.wrapper }` }, table);
-    };
-  },
+					tr.push(h('td', { class: `${ style.td } ${ column.type ?? 'string' } ${ cellClass }` }, cell));
+				});
+
+				let rowClass = props.config.rowClass;
+				if (isFunction(rowClass)) {
+					rowClass = rowClass(row, index);
+				}
+
+				body.push(h('tr', { class: `${ style.tr } ${ rowClass }` }, tr));
+			});
+
+			content.push(h('thead', headers));
+			content.push(h('tbody', body));
+
+			const table = h('table', { class: `${ style.table }` }, content);
+			return h('div', { class: `${ style.wrapper }` }, table);
+		};
+	},
 }
